@@ -59,8 +59,8 @@ extension TweetsViewController:UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("TwitterCell", forIndexPath: indexPath)
-        cell.textLabel?.text = self.tweets[indexPath.row].user?.name
+        let cell = tableView.dequeueReusableCellWithIdentifier("TwitterCell", forIndexPath: indexPath) as! TweetTableViewCell
+        cell.updateUI(self.tweets[indexPath.row])
         return cell
     }
 }
