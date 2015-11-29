@@ -682,8 +682,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qpO-bb-ksQ">
-                                <rect key="frame" x="141" y="222" width="38" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qpO-bb-ksQ">
+                                <rect key="frame" x="141" y="269" width="38" height="30"/>
                                 <animations/>
                                 <state key="normal" title="Login"/>
                                 <connections>
@@ -693,6 +693,10 @@
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="qpO-bb-ksQ" firstAttribute="centerY" secondItem="OYl-0u-t1I" secondAttribute="centerY" id="1eF-LS-LM7"/>
+                            <constraint firstItem="qpO-bb-ksQ" firstAttribute="centerX" secondItem="OYl-0u-t1I" secondAttribute="centerX" id="rie-Jk-rwi"/>
+                        </constraints>
                     </view>
                     <connections>
                         <segue destination="YEa-XF-RO1" kind="modal" identifier="loginSegue" id="thw-mK-XUX"/>
