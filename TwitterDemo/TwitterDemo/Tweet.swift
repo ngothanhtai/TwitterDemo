@@ -7,21 +7,43 @@
 //
 
 import Foundation
+import SwiftMoment
 
 class Tweet {
     var user: User?
     var text: String?
     var createdAtString: String?
     var createdAt: NSDate?
+    var momentTime:String?
+    var retweeted:Bool = false
+    var retweetName:String?
     
     init(dictionary:NSDictionary) {
-        self.user = User(dictionary: dictionary["user"] as! NSDictionary)
-        self.text = dictionary["text"] as? String
-        self.createdAtString = dictionary["created_at"] as? String
+        
+        let nsData = try! NSJSONSerialization.dataWithJSONObject(dictionary, options: .PrettyPrinted)
+        print(NSString(data: nsData, encoding: NSUTF8StringEncoding))
+        
+        var dic = dictionary
+        if dictionary["retweeted_status"] != nil {
+            let retweetUser = User(dictionary: dic["user"] as! NSDictionary)
+            
+            self.retweetName = retweetUser.name
+            
+            dic = dictionary["retweeted_status"] as! NSDictionary
+            
+            self.retweeted = true
+        }
+        
+        self.user = User(dictionary: dic["user"] as! NSDictionary)
+        self.text = dic["text"] as? String
+        self.createdAtString = dic["created_at"] as? String
         
         let formatter = NSDateFormatter()
         formatter.dateFormat = "EEE MMM d HH:mm:ss Z y"
         self.createdAt = formatter.dateFromString(createdAtString!)
+        
+        let yesterday = moment(self.createdAt!)
+        self.momentTime = yesterday.format()
     }
     
     class func tweetsWithArray(array: [NSDictionary]) -> [Tweet] {
