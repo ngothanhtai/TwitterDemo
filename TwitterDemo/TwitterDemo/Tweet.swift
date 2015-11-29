@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftMoment
 
 class Tweet {
     var id:String?
@@ -51,13 +50,17 @@ class Tweet {
         self.favorited  = dic["favorited"] as! Bool
         self.retweeted  = dic["retweeted"] as! Bool
         
-        let formatter = NSDateFormatter()
+        var formatter = NSDateFormatter()
         formatter.dateFormat = "EEE MMM d HH:mm:ss Z y"
         self.createdAt = formatter.dateFromString(createdAtString!)
         
-        let createdAtMoment = moment(self.createdAt!)
-        self.createdAtString = createdAtMoment.format("yy/MM/dd")
-        self.createdAtFullInfoString = createdAtMoment.format("yy/MM/dd EEE d HH:mm:ss")
+        formatter = NSDateFormatter()
+        formatter.dateFormat = "yy/MM/dd"
+        self.createdAtString = formatter.stringFromDate(self.createdAt!)
+        
+        formatter = NSDateFormatter()
+        formatter.dateFormat = "yy/MM/dd EEE d HH:mm:ss"
+        self.createdAtFullInfoString = formatter.stringFromDate(self.createdAt!)
     }
     
     class func tweetsWithArray(array: [NSDictionary]) -> [Tweet] {
