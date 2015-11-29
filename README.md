@@ -28,9 +28,8 @@ Time spent: About 11 hours
 
 ### Walkthrough
 
-![Video Walkthrough](twitter.gif)
+![Video Walkthrough](twitter2.gif)
 
 Libraries:
 - AFNetworking
 - BDBOAuth1Manager
-- SwiftMoment
