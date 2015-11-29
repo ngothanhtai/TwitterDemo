@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol TweetTableViewCellDelegate {
+    func tweetTableViewCell (tweetTableViewCell:TweetTableViewCell, replyTo tweet:Tweet)
+}
+
 class TweetTableViewCell: UITableViewCell {
     @IBOutlet weak var retweetLabel:UILabel!
     @IBOutlet weak var screenNameLabel:UILabel!
@@ -16,11 +20,13 @@ class TweetTableViewCell: UITableViewCell {
     @IBOutlet weak var avatarImgView:UIImageView!
     @IBOutlet weak var timeLabel:UILabel!
 
-    @IBOutlet weak var replyImgView: UIImageView!
-    @IBOutlet weak var retweetImgView: UIImageView!
-    @IBOutlet weak var favoriteImgView: UIImageView!
+    @IBOutlet weak var replyButton: UIButton!
+    @IBOutlet weak var retweetButton: UIButton!
+    @IBOutlet weak var favoriteButton: UIButton!
     @IBOutlet weak var retweetConstraintHeight: NSLayoutConstraint!
     
+    var tweet:Tweet?
+    var delegate:TweetTableViewCellDelegate?
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -29,21 +35,81 @@ class TweetTableViewCell: UITableViewCell {
     }
     
     func updateUI(tweet:Tweet) {
+        self.tweet = tweet
         self.screenNameLabel.text = tweet.user?.name
         self.usernameLabel.text = "@\((tweet.user?.screenName)!)"
         self.textMessageLabel.text = tweet.text
         self.avatarImgView.setImageWithURL(NSURL(string: (tweet.user?.profileImageUrl)!)!)
         self.timeLabel.text = tweet.createdAtString
         
-        if tweet.retweeted {
+        if tweet.isRetweet {
             retweetLabel.text = "\(tweet.retweetName!) retweeted"
             retweetConstraintHeight.constant = 21.0
         } else {
             retweetConstraintHeight.constant = 0.0
         }
         
-        self.favoriteImgView.image = UIImage(named: tweet.favorited ? "like-action-on" : "like-action")
-        self.retweetImgView.image = UIImage(named: tweet.favorited ? "retweet-action-on" : "retweet-action")
+        self.retweetButton.enabled = tweet.user?.screenName! != User.currentUser!.screenName
+        
+        self.updateImage()
+    }
+    
+    func updateImage() {
+        self.favoriteButton.setImage(UIImage(named: tweet!.favorited ? "like-action-on" : "like-action"), forState: UIControlState.Normal)
+        self.retweetButton.setImage(UIImage(named: tweet!.retweeted ? "retweet-action-on" : "retweet-action"), forState: UIControlState.Normal)
+    }
+    
+    @IBAction func onReply(sender: AnyObject) {
+        delegate?.tweetTableViewCell(self, replyTo: self.tweet!)
+    }
+    
+    @IBAction func onRetweet(sender: AnyObject) {
+        if let tweet = tweet {
+            if tweet.retweeted == false {
+                TwitterClient.sharedInstance.retweet(tweet.id!) { (response, error) -> () in
+                    if error == nil {
+                        
+                        self.tweet?.updateFromDic(response!)
+                        self.updateUI(self.tweet!)
+                    }
+                }
+            } else {
+                TwitterClient.sharedInstance.unretweet(tweet.id!) { (response, error) -> () in
+                    if error == nil {
+                        self.tweet?.updateFromDic(response!)
+                        self.tweet?.numRetweets--
+                        if self.tweet?.numRetweets < 0 {
+                            self.tweet?.numRetweets = 0
+                        }
+                        self.tweet?.retweeted = false
+                        self.updateUI(self.tweet!)
+                    }
+                }
+            }
+
+        }
+    }
+    
+    @IBAction func onFavorite(sender: AnyObject) {
+        if let tweet = tweet {
+            if tweet.favorited == false {
+                TwitterClient.sharedInstance.favorite(tweet.id!) { (response, error) -> () in
+                    if error == nil {
+                        self.tweet?.updateFromDic(response!)
+                        self.updateUI(self.tweet!)
+                    }
+                }
+            } else {
+                TwitterClient.sharedInstance.unfavorite(tweet.id!) { (response, error) -> () in
+                    if error == nil {
+                        self.tweet?.updateFromDic(response!)
+                        self.updateUI(self.tweet!)
+                    }
+                }
+            }
+            
+           
+        }
     }
 
 }

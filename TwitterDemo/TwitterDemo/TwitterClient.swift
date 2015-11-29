@@ -83,7 +83,85 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
                 self.loginCompletion?(user: nil, error: error)
             }
         )
-
+    }
+    
+    func tweet(message:String, callBack: (response:NSDictionary?, error:NSError?) -> ()) {
         
+        let params = [
+            "status": message
+        ]
+
+        TwitterClient.sharedInstance.POST("https://api.twitter.com/1.1/statuses/update.json", parameters: params, success: { (requestOperation:AFHTTPRequestOperation, response:AnyObject) -> Void in
+                callBack(response: response as? NSDictionary, error: nil)
+            }) { (requestOperation:AFHTTPRequestOperation?, error:NSError) -> Void in
+                callBack(response: nil, error: error)
+        }
+    }
+    
+    func reply(message:String, id:String, callBack: (response:NSDictionary?, error:NSError?) -> ()) {
+        
+        let params = [
+            "status": message,
+            "in_reply_to_status_id": id
+        ]
+        
+        TwitterClient.sharedInstance.POST("https://api.twitter.com/1.1/statuses/update.json", parameters: params, success: { (requestOperation:AFHTTPRequestOperation, response:AnyObject) -> Void in
+            callBack(response: response as? NSDictionary, error: nil)
+            }) { (requestOperation:AFHTTPRequestOperation?, error:NSError) -> Void in
+                callBack(response: nil, error: error)
+        }
+    }
+    
+    func retweet(id:String, callBack: (response:NSDictionary?, error:NSError?) -> ()) {
+   
+        TwitterClient.sharedInstance.POST("https://api.twitter.com/1.1/statuses/retweet/\(id).json", parameters: nil, success: { (requestOperation:AFHTTPRequestOperation, response:AnyObject) -> Void in
+            callBack(response: response as? NSDictionary, error: nil)
+            }) { (requestOperation:AFHTTPRequestOperation?, error:NSError) -> Void in
+                callBack(response: nil, error: error)
+        }
+    }
+    
+    func unretweet(id:String, callBack: (response:NSDictionary?, error:NSError?) -> ()) {
+        
+        TwitterClient.sharedInstance.GET("https://api.twitter.com/1.1/statuses/show/\(id).json?include_my_retweet=1", parameters: nil, success: { (reqOperation: AFHTTPRequestOperation, response: AnyObject) -> Void in
+
+            
+            if
+            let dic = response as? NSDictionary,
+            let current_user_retweet = dic["current_user_retweet"],
+            let retweet_id = current_user_retweet["id_str"]
+            {
+                TwitterClient.sharedInstance.POST("https://api.twitter.com/1.1/statuses/destroy/\(retweet_id!).json", parameters: nil, success: { (requestOperation:AFHTTPRequestOperation, response:AnyObject) -> Void in
+                    callBack(response: response as? NSDictionary, error: nil)
+                    }) { (requestOperation:AFHTTPRequestOperation?, error:NSError) -> Void in
+                        callBack(response: nil, error: error)
+                }
+            }
+            
+            }) { (reqOperation: AFHTTPRequestOperation?, error: NSError) -> Void in
+                callBack(response: nil, error: error)
+        }
+    }
+    
+    func favorite(id:String, callBack: (response:NSDictionary?, error:NSError?) -> ()) {
+        let params = [
+            "id": id
+        ]
+        TwitterClient.sharedInstance.POST("https://api.twitter.com/1.1/favorites/create.json", parameters: params, success: { (requestOperation:AFHTTPRequestOperation, response:AnyObject) -> Void in
+            callBack(response: response as? NSDictionary, error: nil)
+            }) { (requestOperation:AFHTTPRequestOperation?, error:NSError) -> Void in
+                callBack(response: nil, error: error)
+        }
+    }
+    
+    func unfavorite(id:String, callBack: (response:NSDictionary?, error:NSError?) -> ()) {
+        let params = [
+            "id": id
+        ]
+        TwitterClient.sharedInstance.POST("https://api.twitter.com/1.1/favorites/destroy.json", parameters: params, success: { (requestOperation:AFHTTPRequestOperation, response:AnyObject) -> Void in
+            callBack(response: response as? NSDictionary, error: nil)
+            }) { (requestOperation:AFHTTPRequestOperation?, error:NSError) -> Void in
+                callBack(response: nil, error: error)
+        }
     }
 }

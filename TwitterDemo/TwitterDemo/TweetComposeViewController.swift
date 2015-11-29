@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol TweetComposeViewDelegate {
+    func tweetComposeView(tweetComposeViewContorller:TweetComposeViewController, response:NSDictionary?)
+}
+
 class TweetComposeViewController: UIViewController {
     
     @IBOutlet weak var nameLabel:UILabel!
@@ -17,6 +21,8 @@ class TweetComposeViewController: UIViewController {
     @IBOutlet weak var countBarButton:UIBarButtonItem!
     
     let TWEET_MAX_LENGTH:Int = 140
+    
+    var delegate:TweetComposeViewDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,11 +52,26 @@ class TweetComposeViewController: UIViewController {
 
     @IBAction func onCancel(sender: AnyObject) {
         
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.hide()
     }
     
     @IBAction func onTweet(sender: AnyObject) {
-        
+        if messageTextField.text.characters.count > 0 {
+            
+            TwitterClient.sharedInstance.tweet(messageTextField.text, callBack: { (response, error) -> () in
+                if error != nil {
+                    print(error)
+                    return
+                }
+                self.delegate?.tweetComposeView(self, response: response)
+            })
+           
+            self.hide()
+        }
+    }
+    
+    func hide(){
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
 
     func updateTextCount() {

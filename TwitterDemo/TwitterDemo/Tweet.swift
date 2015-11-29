@@ -9,12 +9,13 @@
 import Foundation
 import SwiftMoment
 
-struct Tweet {
+class Tweet {
+    var id:String?
     var user: User?
     var text: String?
     var createdAtString: String?
+    var createdAtFullInfoString: String?
     var createdAt: NSDate?
-    var momentTime:String?
     var isRetweet:Bool = false
     var retweetName:String?
     
@@ -25,10 +26,11 @@ struct Tweet {
     
     init(dictionary:NSDictionary) {
         
-        let nsData = try! NSJSONSerialization.dataWithJSONObject(dictionary, options: .PrettyPrinted)
-        print(NSString(data: nsData, encoding: NSUTF8StringEncoding))
+//        let nsData = try! NSJSONSerialization.dataWithJSONObject(dictionary, options: .PrettyPrinted)
+//        print(NSString(data: nsData, encoding: NSUTF8StringEncoding))
         
         var dic = dictionary
+
         if dictionary["retweeted_status"] != nil {
             let retweetUser = User(dictionary: dic["user"] as! NSDictionary)
             
@@ -38,6 +40,8 @@ struct Tweet {
             
             self.isRetweet = true
         }
+        
+        self.id = "\(dic["id"]!)"
         
         self.user = User(dictionary: dic["user"] as! NSDictionary)
         self.text = dic["text"] as? String
@@ -51,11 +55,12 @@ struct Tweet {
         formatter.dateFormat = "EEE MMM d HH:mm:ss Z y"
         self.createdAt = formatter.dateFromString(createdAtString!)
         
-        let yesterday = moment(self.createdAt!)
-        self.momentTime = yesterday.format()
+        let createdAtMoment = moment(self.createdAt!)
+        self.createdAtString = createdAtMoment.format("yy/MM/dd")
+        self.createdAtFullInfoString = createdAtMoment.format("yy/MM/dd EEE d HH:mm:ss")
     }
     
-    static func tweetsWithArray(array: [NSDictionary]) -> [Tweet] {
+    class func tweetsWithArray(array: [NSDictionary]) -> [Tweet] {
         var tweets = [Tweet]()
         
         for dictionary in array {
@@ -63,5 +68,19 @@ struct Tweet {
         }
         
         return tweets
+    }
+    
+    func updateFromDic(dic:NSDictionary) {
+        print(dic)
+        let tweet = Tweet(dictionary: dic)
+        self.id = tweet.id
+        self.user = tweet.user
+        self.text = tweet.text
+
+        
+        self.numRetweets = tweet.numRetweets
+        self.numFavorites = tweet.numFavorites
+        self.retweeted = tweet.retweeted
+        self.favorited = tweet.favorited
     }
 }
