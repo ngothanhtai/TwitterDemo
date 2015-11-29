@@ -12,6 +12,7 @@ class TweetsViewController: UIViewController {
     @IBOutlet weak var tableView:UITableView!
     var tweets: [Tweet] = [Tweet]()
     var refreshControl:UIRefreshControl!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.initControls()
@@ -36,6 +37,7 @@ class TweetsViewController: UIViewController {
     }
     
     func initControls() {
+
         tableView.dataSource = self
         tableView.delegate = self
         
@@ -52,6 +54,14 @@ class TweetsViewController: UIViewController {
     @IBAction func logout(sender:AnyObject) {
         User.currentUser?.logout()
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if let tweetVC = segue.destinationViewController as? TweetViewController {
+            if let selectedIndexPath = sender as? NSIndexPath {
+                tweetVC.tweet = self.tweets[selectedIndexPath.row]
+            }
+        }
+    }
 }
 
 extension TweetsViewController:UITableViewDataSource, UITableViewDelegate {
@@ -63,5 +73,12 @@ extension TweetsViewController:UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCellWithIdentifier("TwitterCell", forIndexPath: indexPath) as! TweetTableViewCell
         cell.updateUI(self.tweets[indexPath.row])
         return cell
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        self.tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        
+        
+        self.performSegueWithIdentifier("TweetDetail", sender: indexPath)
     }
 }

@@ -16,6 +16,9 @@ class TweetTableViewCell: UITableViewCell {
     @IBOutlet weak var avatarImgView:UIImageView!
     @IBOutlet weak var timeLabel:UILabel!
 
+    @IBOutlet weak var replyImgView: UIImageView!
+    @IBOutlet weak var retweetImgView: UIImageView!
+    @IBOutlet weak var favoriteImgView: UIImageView!
     @IBOutlet weak var retweetConstraintHeight: NSLayoutConstraint!
     
     override func awakeFromNib() {
@@ -30,14 +33,17 @@ class TweetTableViewCell: UITableViewCell {
         self.usernameLabel.text = "@\((tweet.user?.screenName)!)"
         self.textMessageLabel.text = tweet.text
         self.avatarImgView.setImageWithURL(NSURL(string: (tweet.user?.profileImageUrl)!)!)
-//        self.timeLabel.text = tweet.createdAtString
+        self.timeLabel.text = tweet.createdAtString
         
         if tweet.retweeted {
-            retweetLabel.text = "\(tweet.retweetName) retweeted"
+            retweetLabel.text = "\(tweet.retweetName!) retweeted"
             retweetConstraintHeight.constant = 21.0
         } else {
             retweetConstraintHeight.constant = 0.0
         }
+        
+        self.favoriteImgView.image = UIImage(named: tweet.favorited ? "like-action-on" : "like-action")
+        self.retweetImgView.image = UIImage(named: tweet.favorited ? "retweet-action-on" : "retweet-action")
     }
 
 }

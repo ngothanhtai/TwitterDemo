@@ -9,14 +9,19 @@
 import Foundation
 import SwiftMoment
 
-class Tweet {
+struct Tweet {
     var user: User?
     var text: String?
     var createdAtString: String?
     var createdAt: NSDate?
     var momentTime:String?
-    var retweeted:Bool = false
+    var isRetweet:Bool = false
     var retweetName:String?
+    
+    var numRetweets:Int = 0
+    var numFavorites:Int = 0
+    var favorited:Bool = false
+    var retweeted:Bool = false
     
     init(dictionary:NSDictionary) {
         
@@ -31,12 +36,16 @@ class Tweet {
             
             dic = dictionary["retweeted_status"] as! NSDictionary
             
-            self.retweeted = true
+            self.isRetweet = true
         }
         
         self.user = User(dictionary: dic["user"] as! NSDictionary)
         self.text = dic["text"] as? String
         self.createdAtString = dic["created_at"] as? String
+        self.numRetweets  = dic["retweet_count"] as! Int
+        self.numFavorites  = dic["favorite_count"] as! Int
+        self.favorited  = dic["favorited"] as! Bool
+        self.retweeted  = dic["retweeted"] as! Bool
         
         let formatter = NSDateFormatter()
         formatter.dateFormat = "EEE MMM d HH:mm:ss Z y"
@@ -46,7 +55,7 @@ class Tweet {
         self.momentTime = yesterday.format()
     }
     
-    class func tweetsWithArray(array: [NSDictionary]) -> [Tweet] {
+    static func tweetsWithArray(array: [NSDictionary]) -> [Tweet] {
         var tweets = [Tweet]()
         
         for dictionary in array {
