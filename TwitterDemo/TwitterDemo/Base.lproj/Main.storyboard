@@ -524,15 +524,19 @@
                                 <action selector="onCancel:" destination="aP8-E4-61O" id="A5a-eI-ftx"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Reply" id="7wG-LK-OUu">
-                            <color key="tintColor" red="0.39607843139999999" green="0.6588235294" blue="0.90980392160000001" alpha="1" colorSpace="calibratedRGB"/>
-                            <connections>
-                                <action selector="onReply:" destination="aP8-E4-61O" id="q0k-Lb-fCg"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem title="Reply" id="7wG-LK-OUu">
+                                <color key="tintColor" red="0.39607843139999999" green="0.6588235294" blue="0.90980392160000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="onReply:" destination="aP8-E4-61O" id="q0k-Lb-fCg"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem enabled="NO" title="140" id="RBM-5q-nVf"/>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="avatarImgView" destination="hP5-kx-N5Q" id="fbu-oC-TNn"/>
+                        <outlet property="countBarButton" destination="RBM-5q-nVf" id="87o-uW-3TI"/>
                         <outlet property="messageTextField" destination="Mkg-C5-0wG" id="Uvr-tl-zSB"/>
                         <outlet property="nameLabel" destination="QBz-bR-30q" id="mty-Ii-Or2"/>
                         <outlet property="usernameLabel" destination="Ref-vp-1QA" id="DEB-0N-qqj"/>

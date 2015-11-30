@@ -18,6 +18,9 @@ class ReplyViewController: UIViewController {
     @IBOutlet weak var usernameLabel:UILabel!
     @IBOutlet weak var avatarImgView:UIImageView!
     @IBOutlet weak var messageTextField:UITextView!
+    @IBOutlet weak var countBarButton:UIBarButtonItem!
+    
+    let TWEET_MAX_LENGTH = 140
     
     var targetUserName:String = ""
     var id:String = ""
@@ -25,6 +28,10 @@ class ReplyViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.messageTextField.becomeFirstResponder()
+        
+        self.messageTextField.delegate = self
         
         self.messageTextField.text = "\(targetUserName) "
         
@@ -63,5 +70,27 @@ class ReplyViewController: UIViewController {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    func updateTextCount() {
+        let strLength = (self.messageTextField.text?.characters.count)!
+        
+        UIView.setAnimationsEnabled(false)
+        self.countBarButton.title = "\(TWEET_MAX_LENGTH - strLength)"
+        UIView.setAnimationsEnabled(true)
+    }
+}
+
+extension ReplyViewController : UITextViewDelegate {
     
+    func textViewDidChange(textView: UITextView) {
+        self.updateTextCount()
+    }
+    
+    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        let currentCharacterCount = self.messageTextField.text?.characters.count ?? 0
+        if (range.length + range.location > currentCharacterCount){
+            return false
+        }
+        let newLength = currentCharacterCount + text.characters.count - range.length
+        return newLength <= TWEET_MAX_LENGTH
+    }
 }
