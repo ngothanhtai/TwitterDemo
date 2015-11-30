@@ -22,7 +22,7 @@ class TweetsViewController: UIViewController {
 
     func fetchData() {
         
-        self.tableView.hidden = true
+        self.tableView.hidden = tweets.count == 0
         refreshControl.beginRefreshing()
         TwitterClient.sharedInstance.homeTimelineWithParams(nil) { (tweets, error) -> () in
             if error != nil {

@@ -682,23 +682,61 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qpO-bb-ksQ">
-                                <rect key="frame" x="141" y="269" width="38" height="30"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connect with your friends" textAlignment="justified" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="flF-tX-R8Z">
+                                <rect key="frame" x="77" y="299" width="167" height="17"/>
                                 <animations/>
-                                <state key="normal" title="Login"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qpO-bb-ksQ">
+                                <rect key="frame" x="117" y="344" width="85" height="36"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="O3o-Fg-GoB"/>
+                                    <constraint firstAttribute="width" constant="85" id="v9z-Yr-qm5"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="20"/>
+                                <state key="normal" title="Login">
+                                    <color key="titleColor" red="0.39607843139999999" green="0.6588235294" blue="0.90980392160000001" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
                                 <connections>
                                     <action selector="onLogin:" destination="Spn-nb-Gw9" eventType="touchUpInside" id="xyq-tV-XgW"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Twitter" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wCf-oT-j52">
+                                <rect key="frame" x="8" y="269" width="304" height="30"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <color key="textColor" red="0.39607843139999999" green="0.6588235294" blue="0.90980392160000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon" translatesAutoresizingMaskIntoConstraints="NO" id="Lcg-R7-eeE">
+                                <rect key="frame" x="84" y="144" width="153" height="117"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="117" id="Y4Z-lW-UpT"/>
+                                    <constraint firstAttribute="width" constant="153" id="x0N-3k-Q6s"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="qpO-bb-ksQ" firstAttribute="centerY" secondItem="OYl-0u-t1I" secondAttribute="centerY" id="1eF-LS-LM7"/>
-                            <constraint firstItem="qpO-bb-ksQ" firstAttribute="centerX" secondItem="OYl-0u-t1I" secondAttribute="centerX" id="rie-Jk-rwi"/>
+                            <constraint firstItem="wCf-oT-j52" firstAttribute="top" secondItem="Lcg-R7-eeE" secondAttribute="bottom" constant="8" id="6qa-ZV-168"/>
+                            <constraint firstAttribute="trailing" secondItem="wCf-oT-j52" secondAttribute="trailing" constant="8" id="9R8-8t-3sI"/>
+                            <constraint firstItem="wCf-oT-j52" firstAttribute="leading" secondItem="OYl-0u-t1I" secondAttribute="leading" constant="8" id="Ffj-Zg-gk5"/>
+                            <constraint firstItem="flF-tX-R8Z" firstAttribute="top" secondItem="wCf-oT-j52" secondAttribute="bottom" id="GnJ-qG-I5X"/>
+                            <constraint firstItem="wCf-oT-j52" firstAttribute="centerX" secondItem="OYl-0u-t1I" secondAttribute="centerX" id="M2h-oJ-ucg"/>
+                            <constraint firstItem="qpO-bb-ksQ" firstAttribute="centerX" secondItem="OYl-0u-t1I" secondAttribute="centerX" id="Xif-Sh-4q8"/>
+                            <constraint firstItem="Lcg-R7-eeE" firstAttribute="centerX" secondItem="OYl-0u-t1I" secondAttribute="centerX" id="ahY-c2-VzO"/>
+                            <constraint firstItem="qpO-bb-ksQ" firstAttribute="top" secondItem="flF-tX-R8Z" secondAttribute="bottom" constant="28" id="clU-dX-gnR"/>
+                            <constraint firstItem="flF-tX-R8Z" firstAttribute="centerX" secondItem="OYl-0u-t1I" secondAttribute="centerX" id="fK2-io-JkY"/>
+                            <constraint firstItem="wCf-oT-j52" firstAttribute="centerY" secondItem="OYl-0u-t1I" secondAttribute="centerY" id="y4x-b6-gMD"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="loginButton" destination="qpO-bb-ksQ" id="DLa-hn-OmU"/>
                         <segue destination="YEa-XF-RO1" kind="modal" identifier="loginSegue" id="thw-mK-XUX"/>
                     </connections>
                 </viewController>
@@ -746,6 +784,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="icon" width="510" height="360"/>
         <image name="like-action" width="54" height="72"/>
         <image name="reply-action" width="65" height="72"/>
         <image name="retweet-action" width="75" height="72"/>
