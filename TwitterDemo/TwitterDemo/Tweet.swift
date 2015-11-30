@@ -74,7 +74,6 @@ class Tweet {
     }
     
     func updateFromDic(dic:NSDictionary) {
-        print(dic)
         let tweet = Tweet(dictionary: dic)
         self.id = tweet.id
         self.user = tweet.user

@@ -48,7 +48,7 @@ class TweetsViewController: UIViewController {
                 let data = error.userInfo["com.alamofire.serialization.response.error.data"] as? NSData
                 {
                     let dic = try! NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) as! NSDictionary
-                    print(dic)
+                 
                     if let errors = dic["errors"],
                     let error = errors[0],
                     let message = error["message"] {
