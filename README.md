@@ -28,7 +28,7 @@ Time spent: About 12 hours
 
 ### Walkthrough
 
-![Video Walkthrough](twitter2.gif)
+![Video Walkthrough](twitter.gif)
 
 Libraries:
 - AFNetworking
