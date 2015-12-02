@@ -9,58 +9,55 @@
 import Foundation
 
 class Tweet {
-    var id:String?
+    var id: String?
     var user: User?
     var text: String?
     var createdAtString: String?
     var createdAtFullInfoString: String?
     var createdAt: NSDate?
-    var isRetweet:Bool = false
-    var retweetName:String?
+    var isRetweet = false
+    var retweetName: String?
     
-    var numRetweets:Int = 0
-    var numFavorites:Int = 0
-    var favorited:Bool = false
-    var retweeted:Bool = false
+    var numRetweets = 0
+    var numFavorites = 0
+    var favorited = false
+    var retweeted = false
     
     init(dictionary:NSDictionary) {
-        
-//        let nsData = try! NSJSONSerialization.dataWithJSONObject(dictionary, options: .PrettyPrinted)
-//        print(NSString(data: nsData, encoding: NSUTF8StringEncoding))
-        
         var dic = dictionary
 
-        if dictionary["retweeted_status"] != nil {
-            let retweetUser = User(dictionary: dic["user"] as! NSDictionary)
+        if let reweetDic = dictionary["retweeted_status"] as? NSDictionary,
+            userDic = dictionary["user"] as? NSDictionary {
+            let retweetUser = User(dictionary: userDic)
             
-            self.retweetName = retweetUser.name
+            retweetName = retweetUser.name
             
-            dic = dictionary["retweeted_status"] as! NSDictionary
+            dic = reweetDic
             
-            self.isRetweet = true
+            isRetweet = true
         }
         
-        self.id = "\(dic["id"]!)"
+        id = "\(dic["id"]!)"
         
-        self.user = User(dictionary: dic["user"] as! NSDictionary)
-        self.text = dic["text"] as? String
-        self.createdAtString = dic["created_at"] as? String
-        self.numRetweets  = dic["retweet_count"] as! Int
-        self.numFavorites  = dic["favorite_count"] as! Int
-        self.favorited  = dic["favorited"] as! Bool
-        self.retweeted  = dic["retweeted"] as! Bool
+        user = User(dictionary: dic["user"] as! NSDictionary)
+        text = dic["text"] as? String
+        createdAtString = dic["created_at"] as? String
+        numRetweets  = dic["retweet_count"] as! Int
+        numFavorites  = dic["favorite_count"] as! Int
+        favorited  = dic["favorited"] as! Bool
+        retweeted  = dic["retweeted"] as! Bool
         
         var formatter = NSDateFormatter()
         formatter.dateFormat = "EEE MMM d HH:mm:ss Z y"
-        self.createdAt = formatter.dateFromString(createdAtString!)
+        createdAt = formatter.dateFromString(createdAtString!)
         
         formatter = NSDateFormatter()
         formatter.dateFormat = "yy/MM/dd"
-        self.createdAtString = formatter.stringFromDate(self.createdAt!)
+        createdAtString = formatter.stringFromDate(createdAt!)
         
         formatter = NSDateFormatter()
         formatter.dateFormat = "yy/MM/dd EEE d HH:mm:ss"
-        self.createdAtFullInfoString = formatter.stringFromDate(self.createdAt!)
+        createdAtFullInfoString = formatter.stringFromDate(createdAt!)
     }
     
     class func tweetsWithArray(array: [NSDictionary]) -> [Tweet] {

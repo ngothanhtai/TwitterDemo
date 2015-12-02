@@ -9,32 +9,31 @@
 import UIKit
 
 class TweetsViewController: UIViewController {
-    @IBOutlet weak var tableView:UITableView!
+    @IBOutlet weak var tableView: UITableView!
     var tweets: [Tweet] = [Tweet]()
-    var refreshControl:UIRefreshControl!
-    var maxId:String?
+    var refreshControl: UIRefreshControl!
+    var maxId: String?
     var loadingMoreResult = false
-    var loadingViewIndicator:UIActivityIndicatorView!
+    var loadingViewIndicator: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.initControls()
-
+        
+        initControls()
         fetchData()
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
         
-        self.loadingViewIndicator.hidden = true
-        self.loadingViewIndicator.stopAnimating()
-        self.loadingMoreResult = false
+        loadingViewIndicator.hidden = true
+        loadingViewIndicator.stopAnimating()
+        loadingMoreResult = false
 
-        self.tableView.reloadData()
+        tableView.reloadData()
     }
 
     func fetchData(maxId:String = "") {
-
         var params:NSDictionary = NSDictionary()
         if maxId.isEmpty == false {
             params = [ "max_id": maxId]
@@ -45,7 +44,7 @@ class TweetsViewController: UIViewController {
         TwitterClient.sharedInstance.homeTimelineWithParams(params) { (tweets, error) -> () in
             if error != nil {
                 if let error = error,
-                let data = error.userInfo["com.alamofire.serialization.response.error.data"] as? NSData
+                data = error.userInfo["com.alamofire.serialization.response.error.data"] as? NSData
                 {
                     let dic = try! NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) as! NSDictionary
                  
@@ -76,7 +75,6 @@ class TweetsViewController: UIViewController {
             
             self.loadingViewIndicator.hidden = true
             self.loadingViewIndicator.stopAnimating()
-            
         }
     }
     
@@ -84,12 +82,12 @@ class TweetsViewController: UIViewController {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
         let okAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
         alertController.addAction(okAction)
-        self.presentViewController(alertController, animated: true, completion: nil)
+        presentViewController(alertController, animated: true, completion: nil)
     }
     
     func updateMaxId() {
-        if let lastTweet = self.tweets.last {
-            self.maxId = lastTweet.id
+        if let lastTweet = tweets.last {
+            maxId = lastTweet.id
         }
     }
     
@@ -104,29 +102,29 @@ class TweetsViewController: UIViewController {
         refreshControl.endRefreshing()
         refreshControl.addTarget(self, action: "onRefresh", forControlEvents: .ValueChanged)
         
-        self.tableView.insertSubview(refreshControl, atIndex: 0)
+        tableView.insertSubview(refreshControl, atIndex: 0)
         
-        self.addLoadingViewIndicatorAtBottomOfTableView()
+        addLoadingViewIndicatorAtBottomOfTableView()
     }
     
     func onRefresh() {
-        self.fetchData()
+        fetchData()
     }
     
     func addLoadingViewIndicatorAtBottomOfTableView() {
         // add trigger at the end icon
         let tableViewFooter = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
-        self.loadingViewIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
-        self.loadingViewIndicator.hidden = true
-        self.loadingViewIndicator.stopAnimating()
-        self.loadingViewIndicator.center = tableViewFooter.center
+        loadingViewIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        loadingViewIndicator.hidden = true
+        loadingViewIndicator.stopAnimating()
+        loadingViewIndicator.center = tableViewFooter.center
         
-        tableViewFooter.addSubview(self.loadingViewIndicator)
-        self.tableView.tableFooterView = tableViewFooter
+        tableViewFooter.addSubview(loadingViewIndicator)
+        tableView.tableFooterView = tableViewFooter
         
-        self.loadingViewIndicator.translatesAutoresizingMaskIntoConstraints = false
+        loadingViewIndicator.translatesAutoresizingMaskIntoConstraints = false
         
-        let views = ["view": tableViewFooter, "newView": self.loadingViewIndicator]
+        let views = ["view": tableViewFooter, "newView": loadingViewIndicator]
         let horizontalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:[view]-(<=0)-[newView(320)]", options: NSLayoutFormatOptions.AlignAllCenterY, metrics: nil, views: views)
         view.addConstraints(horizontalConstraints)
         let verticalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[view]-(<=0)-[newView(50)]", options: NSLayoutFormatOptions.AlignAllCenterX, metrics: nil, views: views)
@@ -140,7 +138,7 @@ class TweetsViewController: UIViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if let tweetVC = segue.destinationViewController as? TweetViewController {
             if let selectedIndexPath = sender as? NSIndexPath {
-                tweetVC.tweet = self.tweets[selectedIndexPath.row]
+                tweetVC.tweet = tweets[selectedIndexPath.row]
                 tweetVC.delegate = self
             }
         } else if let navigationController = segue.destinationViewController as? UINavigationController {
@@ -163,42 +161,41 @@ extension TweetsViewController:UITableViewDataSource, UITableViewDelegate {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("TwitterCell", forIndexPath: indexPath) as! TweetTableViewCell
-        cell.updateUI(self.tweets[indexPath.row])
+        cell.updateUI(tweets[indexPath.row])
         cell.delegate = self
         
-        if self.loadingMoreResult == false && self.loadingViewIndicator.hidden && indexPath.row == self.tweets.count - 1{
-            self.loadingViewIndicator.hidden = false
-            self.loadingViewIndicator.startAnimating()
-            self.fetchData(self.maxId!)
-            self.loadingMoreResult = true
+        if !loadingMoreResult && loadingViewIndicator.hidden && indexPath.row == tweets.count - 1{
+            loadingViewIndicator.hidden = false
+            loadingViewIndicator.startAnimating()
+            fetchData(maxId!)
+            loadingMoreResult = true
         }
         
         return cell
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        self.tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
-        
-        self.performSegueWithIdentifier("TweetDetail", sender: indexPath)
+        performSegueWithIdentifier("TweetDetail", sender: indexPath)
     }
 }
 
 extension TweetsViewController:TweetComposeViewDelegate {
     func tweetComposeView(tweetComposeViewContorller: TweetComposeViewController, response: NSDictionary?) {
         if response != nil {
-            self.tweets.insert(Tweet(dictionary: response!), atIndex: 0)
-            self.tableView.reloadData()
+            tweets.insert(Tweet(dictionary: response!), atIndex: 0)
+            tableView.reloadData()
         }
     }
 }
 
-extension TweetsViewController:ReplyViewDelegate {
+extension TweetsViewController:ReplyViewControllerDelegate {
     
     func replyView(replyViewController: ReplyViewController, response: NSDictionary?) {
         if response != nil {
-            self.tweets.insert(Tweet(dictionary: response!), atIndex: 0)
-            self.tableView.reloadData()
+            tweets.insert(Tweet(dictionary: response!), atIndex: 0)
+            tableView.reloadData()
         }
     }
 
@@ -206,6 +203,6 @@ extension TweetsViewController:ReplyViewDelegate {
 
 extension TweetsViewController : TweetTableViewCellDelegate {
     func tweetTableViewCell(tweetTableViewCell: TweetTableViewCell, replyTo tweet: Tweet) {
-        self.performSegueWithIdentifier("TweetReply", sender: tweet)
+        performSegueWithIdentifier("TweetReply", sender: tweet)
     }
 }

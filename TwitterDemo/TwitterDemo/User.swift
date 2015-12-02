@@ -15,11 +15,11 @@ let userDidLogoutNotification = "userDidLogoutNotification"
 
 class User {
     
-    var name:String?
-    var screenName:String?
+    var name: String?
+    var screenName: String?
     var profileImageUrl: String?
     var tagline: String?
-    var dictionary:NSDictionary?
+    var dictionary: NSDictionary?
     
     init(dictionary: NSDictionary) {
         self.dictionary = dictionary

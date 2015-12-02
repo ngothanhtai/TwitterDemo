@@ -14,50 +14,47 @@ protocol TweetComposeViewDelegate {
 
 class TweetComposeViewController: UIViewController {
     
-    @IBOutlet weak var nameLabel:UILabel!
-    @IBOutlet weak var usernameLabel:UILabel!
-    @IBOutlet weak var avatarImgView:UIImageView!
-    @IBOutlet weak var messageTextField:UITextView!
-    @IBOutlet weak var countBarButton:UIBarButtonItem!
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet weak var avatarImgView: UIImageView!
+    @IBOutlet weak var messageTextField: UITextView!
+    @IBOutlet weak var countBarButton: UIBarButtonItem!
     
-    let TWEET_MAX_LENGTH:Int = 140
+    let tweetMaxLength = 140
     
-    var delegate:TweetComposeViewDelegate?
+    var delegate: TweetComposeViewDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.messageTextField.delegate = self
+        messageTextField.delegate = self
 
-        self.messageTextField.text = ""
-        self.updateTextCount()
+        messageTextField.text = ""
+        updateTextCount()
         
-        self.messageTextField.becomeFirstResponder()
+        messageTextField.becomeFirstResponder()
         
-        self.updateProfile()
+        updateProfile()
     }
     
     func updateProfile() {
-        
-        self.avatarImgView.clipsToBounds = true
-        self.avatarImgView.layer.cornerRadius = 5
+        avatarImgView.clipsToBounds = true
+        avatarImgView.layer.cornerRadius = 5
         
         if let user = User.currentUser {
-            self.avatarImgView.setImageWithURL(NSURL(string: user.profileImageUrl!)!)
-            self.nameLabel.text = user.name!
-            self.usernameLabel.text = "@\(user.screenName!)"
+            avatarImgView.setImageWithURL(NSURL(string: user.profileImageUrl!)!)
+            nameLabel.text = user.name!
+            usernameLabel.text = "@\(user.screenName!)"
         }
         
     }
 
     @IBAction func onCancel(sender: AnyObject) {
-        
-        self.hide()
+        hide()
     }
     
     @IBAction func onTweet(sender: AnyObject) {
         if messageTextField.text.characters.count > 0 {
-            
             TwitterClient.sharedInstance.tweet(messageTextField.text, callBack: { (response, error) -> () in
                 if error != nil {
                     print(error)
@@ -66,37 +63,35 @@ class TweetComposeViewController: UIViewController {
                 self.delegate?.tweetComposeView(self, response: response)
             })
            
-            self.hide()
+            hide()
         }
     }
     
     func hide(){
-        self.dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: nil)
     }
 
     func updateTextCount() {
-        let strLength = (self.messageTextField.text?.characters.count)!
+        let strLength = (messageTextField.text?.characters.count)!
         
         UIView.setAnimationsEnabled(false)
-        self.countBarButton.title = "\(TWEET_MAX_LENGTH - strLength)"
+        countBarButton.title = "\(tweetMaxLength - strLength)"
         UIView.setAnimationsEnabled(true)
     }
-    
-    
 }
 
 extension TweetComposeViewController : UITextViewDelegate {
     
     func textViewDidChange(textView: UITextView) {
-        self.updateTextCount()
+        updateTextCount()
     }
     
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
-        let currentCharacterCount = self.messageTextField.text?.characters.count ?? 0
+        let currentCharacterCount = messageTextField.text?.characters.count ?? 0
         if (range.length + range.location > currentCharacterCount){
             return false
         }
         let newLength = currentCharacterCount + text.characters.count - range.length
-        return newLength <= TWEET_MAX_LENGTH
+        return newLength <= tweetMaxLength
     }
 }

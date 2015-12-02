@@ -12,74 +12,73 @@ class TweetViewController: UIViewController {
 
     @IBOutlet weak var retweetNameLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var usernameLabel:UILabel!
-    @IBOutlet weak var messageLabel:UILabel!
-    @IBOutlet weak var timeLabel:UILabel!
-    @IBOutlet weak var numRetweetsLabel:UILabel!
-    @IBOutlet weak var numFavoritesLabel:UILabel!
-    @IBOutlet weak var retweetConstraintHeight:NSLayoutConstraint!
-    @IBOutlet weak var avatarImgView:UIImageView!
+    @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet weak var messageLabel: UILabel!
+    @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var numRetweetsLabel: UILabel!
+    @IBOutlet weak var numFavoritesLabel: UILabel!
+    @IBOutlet weak var retweetConstraintHeight: NSLayoutConstraint!
+    @IBOutlet weak var avatarImgView: UIImageView!
     
     @IBOutlet weak var replyButton: UIButton!
     @IBOutlet weak var retweetButton: UIButton!
     @IBOutlet weak var favoriteButton: UIButton!
     
-    var tweet:Tweet?
-    var delegate:ReplyViewDelegate?
+    var tweet: Tweet?
+    var delegate: ReplyViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        navigationController?.navigationBar.tintColor = UIColor.whiteColor()
         
-        self.avatarImgView.clipsToBounds = true
-        self.avatarImgView.layer.cornerRadius = 5
+        avatarImgView.clipsToBounds = true
+        avatarImgView.layer.cornerRadius = 5
         
-       self.updateUI()
+        updateUI()
     }
 
     func updateUI() {
-        
         if let tweet = tweet {
-            self.nameLabel.text = tweet.user?.name
-            self.usernameLabel.text = "@\((tweet.user?.screenName)!)"
-            self.messageLabel.text = tweet.text
-            self.avatarImgView.setImageWithURL(NSURL(string: (tweet.user?.profileImageUrl)!)!)
-            self.timeLabel.text = tweet.createdAtFullInfoString
+            nameLabel.text = tweet.user?.name
+            usernameLabel.text = "@\((tweet.user?.screenName)!)"
+            messageLabel.text = tweet.text
+            avatarImgView.setImageWithURL(NSURL(string: (tweet.user?.profileImageUrl)!)!)
+            timeLabel.text = tweet.createdAtFullInfoString
             
             if tweet.isRetweet {
-                self.retweetNameLabel.text = "\(tweet.retweetName!) retweeted"
+                retweetNameLabel.text = "\(tweet.retweetName!) retweeted"
                 retweetConstraintHeight.constant = 21.0
             } else {
                 retweetConstraintHeight.constant = 0.0
             }
             
-            self.numRetweetsLabel.text = "\(tweet.numRetweets)"
-            self.numFavoritesLabel.text = "\(tweet.numFavorites)"
+            numRetweetsLabel.text = "\(tweet.numRetweets)"
+            numFavoritesLabel.text = "\(tweet.numFavorites)"
             
-            self.retweetButton.enabled = tweet.user?.screenName! != User.currentUser!.screenName
+            retweetButton.enabled = tweet.user?.screenName! != User.currentUser!.screenName
             
-            self.updateImage()
+            updateImage()
         }
     }
     
     func updateImage() {
-        self.favoriteButton.setImage(UIImage(named: tweet!.favorited ? "like-action-on" : "like-action"), forState: UIControlState.Normal)
-        self.retweetButton.setImage(UIImage(named: tweet!.retweeted ? "retweet-action-on" : "retweet-action"), forState: UIControlState.Normal)
+        favoriteButton.setImage(UIImage(named: tweet!.favorited ? "like-action-on" : "like-action"), forState: UIControlState.Normal)
+        retweetButton.setImage(UIImage(named: tweet!.retweeted ? "retweet-action-on" : "retweet-action"), forState: UIControlState.Normal)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if let nc = segue.destinationViewController as? UINavigationController {
             if let replyVC = nc.topViewController as? ReplyViewController {
-                replyVC.targetUserName = self.usernameLabel.text!
-                replyVC.id = self.tweet!.id!
-                replyVC.delegate = self.delegate
+                replyVC.targetUserName = usernameLabel.text!
+                replyVC.id = tweet!.id!
+                replyVC.delegate = delegate
             }
         }
     }
 
     @IBAction func onReply(sender: AnyObject) {
-        self.performSegueWithIdentifier("TweetReply", sender: self)
+        performSegueWithIdentifier("TweetReply", sender: self)
     }
     
     @IBAction func onRetweet(sender: AnyObject) {
@@ -124,9 +123,7 @@ class TweetViewController: UIViewController {
                         self.updateUI()
                     }
                 }
-            }
-            
-            
+            } 
         }
     }
 }
